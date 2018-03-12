@@ -1,0 +1,10 @@
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/obj/Debug/netcoreapp2.0/CoursePlanning.csproj.CoreCompileInputs.cache
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/obj/Debug/netcoreapp2.0/CoursePlanning.AssemblyInfoInputs.cache
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/obj/Debug/netcoreapp2.0/CoursePlanning.AssemblyInfo.cs
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/bin/Debug/netcoreapp2.0/CoursePlanning.deps.json
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/bin/Debug/netcoreapp2.0/CoursePlanning.runtimeconfig.json
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/bin/Debug/netcoreapp2.0/CoursePlanning.runtimeconfig.dev.json
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/bin/Debug/netcoreapp2.0/CoursePlanning.dll
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/bin/Debug/netcoreapp2.0/CoursePlanning.pdb
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/obj/Debug/netcoreapp2.0/CoursePlanning.dll
+/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/obj/Debug/netcoreapp2.0/CoursePlanning.pdb
