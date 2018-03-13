@@ -11,6 +11,17 @@ namespace CoursePlanning
     	SortedDictionary<string, int> dictStoI;
     	SortedDictionary<int, string> dictItoS;
 
+    	bool visitedAllVertex() {
+    		bool visited_all = true;
+    		for(int i = 0; i < no_of_vertex; i++) {
+    			if(!visited[i]) {
+    				visited_all = false;
+    				break;
+    			}
+    		}
+    		return visited_all;
+    	}
+
 		int compareTuple(Tuple<int, int> x, Tuple<int, int> y) {
 		    if (x.Item1 == y.Item1) {
 		    	return x.Item2 < y.Item2 ? -1 : 1;
@@ -74,7 +85,6 @@ namespace CoursePlanning
 					graph[dictStoI[matrix[i][j]], i] = 1;
 				}
 			}
-			// return graph;
 		}
 
 		void DFS(int vertex, ref List<Tuple<int, int> > list, ref int timestamp)
@@ -85,7 +95,6 @@ namespace CoursePlanning
 			timestamp++;
 			for(int i = 0; i < no_of_vertex; i++) {
 				if(graph[vertex, i] == 1 && !visited[i]) {
-					graph[vertex, i] = 0;
 					DFS(i, ref list, ref timestamp);
 				}
 			}
@@ -94,50 +103,68 @@ namespace CoursePlanning
 			timestamp++;
 		}
 
-		void BFS(int vertex, ref List<Tuple<int, int> > list, ref int timestamp)
+		void BFS(int vertex, ref List<int> list)
 		{
-
+			Queue<int> q = new Queue<int>();
+			q.Enqueue(vertex);
+			while((q.Count != 0) && !visitedAllVertex()) {
+				int v = q.Dequeue();
+				if(noInEdge(v) && !visited[v]) {
+					visited[v] = true;
+					for(int i = 0; i < no_of_vertex; i++) {
+						if(graph[v, i] == 1 && !visited[i]) {
+							graph[v, i] = 0;
+							q.Enqueue(i);
+						}
+					}
+					list.Add(v);
+				}
+			}
 		}
 
 		void topologicalSort(List<string>[] matrix) 
 		{
 			generateGraph(matrix);
 
+			Console.WriteLine("Graph : ");
 			for(int i = 0; i < no_of_vertex; i++) {
 				for(int j = 0; j < no_of_vertex; j++) {
 					Console.Write("{0} ", graph[i, j]);
 				}
 				Console.Write("\n");
 			}
+			Console.WriteLine();
 
 			// Tuple of timestamp and vertex
-			List<Tuple<int, int> > list = new List<Tuple<int, int> >();
+			List<Tuple<int, int> > listDFS = new List<Tuple<int, int> >();
 			visited = new bool[no_of_vertex];
 			int timestamp = 1;
-			int start_vertex = vertexNoIn();
-			DFS(start_vertex, ref list, ref timestamp);
-			list.Sort(compareTuple);
-			// for(int i = 0; i < list.Count; i++) {
-			// 	Console.WriteLine("{0} {1}", list[i].Item1, dictItoS[list[i].Item2]);
-			// }
+			DFS(vertexNoIn(), ref listDFS, ref timestamp);
+			listDFS.Sort(compareTuple);
 
 			// Print all ordered
+			Console.Write("DFS: ");
 			bool[] printed = new bool[no_of_vertex];
-			for(int i = 0; i < list.Count; i++) {
-				if(!printed[list[i].Item2]) {
-					Console.Write("{0} ", dictItoS[list[i].Item2]);
-					printed[list[i].Item2] = true;
+			for(int i = 0; i < listDFS.Count; i++) {
+				if(!printed[listDFS[i].Item2]) {
+					Console.Write("{0} ", dictItoS[listDFS[i].Item2]);
+					printed[listDFS[i].Item2] = true;
 				}
 			}
 			Console.WriteLine();
+			Console.WriteLine();
 
-			// list.Clear();
-			// visited = new bool[no_of_vertex];
-			// timestamp = 1;
-			// BFS(vertexNoIn(), ref list, ref timestamp);
-			// list.Sort(compareTuple);
+			List<int> listBFS = new List<int>();
+			visited = new bool[no_of_vertex];
+			BFS(vertexNoIn(), ref listBFS);
 
 			// Print all Ordered
+			Console.Write("BFS: ");
+			for(int i = 0; i < listBFS.Count; i++) {
+				Console.Write("{0} ", dictItoS[listBFS[i]]);
+			}
+			Console.WriteLine();
+			Console.WriteLine();
 		}
 
 		static void Main()
