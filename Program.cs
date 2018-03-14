@@ -15,11 +15,11 @@ namespace CoursePlanning
 
 	class Graph
 	{
-		private int[,] graph;
-    	private bool[] visited;
+		private Dictionary<string, HashSet<string>> graph;
+    	private Dictionary<string, bool> visited = new Dictionary<string, bool>();
     	private int no_of_vertex;
-    	private SortedDictionary<string, int> dictStoI;
-    	private SortedDictionary<int, string> dictItoS;
+    	// private SortedDictionary<string, int> dictStoI;
+    	// private SortedDictionary<int, string> dictItoS;
 
     	public Graph(string file) 
     	{
@@ -43,25 +43,41 @@ namespace CoursePlanning
 
 			no_of_vertex = matrix.Length;
 
-			dictStoI = new SortedDictionary<string, int>();
-			dictItoS = new SortedDictionary<int, string>();
+			// dictStoI = new SortedDictionary<string, int>();
+			// dictItoS = new SortedDictionary<int, string>();
 
-			for(int i = 0; i < no_of_vertex; i++) {
-				dictStoI[matrix[i][0]] = i;
-				dictItoS[i] = matrix[i][0];
-			}
+			// for(int i = 0; i < no_of_vertex; i++) {
+			// 	dictStoI[matrix[i][0]] = i;
+			// 	dictItoS[i] = matrix[i][0];
+			// }
 
-			graph = new int[no_of_vertex, no_of_vertex]; // Initialize matrix to zeros
+			graph = new Dictionary<string, HashSet<string>>(); // Initialize matrix to zeros
 			for(int i = 0; i < no_of_vertex; i++) {
+				graph[matrix[i][0]] = new HashSet<string>();
 				for(int j = 1; j < matrix[i].Count; j++) {
-					graph[dictStoI[matrix[i][j]], i] = 1;
+					graph[matrix[i][0]].Add(matrix[i][j]);
 				}
 			}
     	}
 
+    	private void initializeVisited() {
+    		foreach(string s in graph.Keys) {
+    			visited[s] = false;
+    		}
+    	}
+
+    	private bool isAdjacent(string src, string dest) 
+    	{
+    		return graph[dest].Contains(src);
+    	}
+
+    	private void deleteEdge(string src, string dest) {
+    		graph[dest].Remove(src);
+    	}
+
     	private bool visitedAllVertex() {
     		bool visited_all = true;
-    		for(int i = 0; i < no_of_vertex; i++) {
+    		foreach(string i in graph.Keys) {
     			if(!visited[i]) {
     				visited_all = false;
     				break;
@@ -70,35 +86,25 @@ namespace CoursePlanning
     		return visited_all;
     	}
 
-		private int compareTuple(Tuple<int, int> x, Tuple<int, int> y) {
-		    if (x.Item1 == y.Item1) {
-		    	return x.Item2 < y.Item2 ? -1 : 1;
-		    } else {
-		    	return x.Item1 > y.Item1 ? -1 : 1;
-		    }
+		private int compareTuple(Tuple<int, string> x, Tuple<int, string> y) {
+		    return x.Item1 > y.Item1 ? -1 : 1;
 		}
 
-		private int vertexNoIn() {
-			int i = 0;
-			bool found = false;
-			while(i < no_of_vertex && !found) {
-				if(noInEdge(i)) {
-					found = true;
-				} else {
-					i++;
+		private string vertexNoIn() {
+			string res = "\0";
+			foreach(KeyValuePair<string, HashSet<string>> kvp in graph) {
+				if(kvp.Value.Count == 0) {
+					res = kvp.Key;
+					break;
 				}
 			}
-			if(found) {
-				return i;
-			} else {
-				return -1;
-			}
+			return res;
 		}
 
-		private bool noOutEdge(int v) {
+		private bool noOutEdge(string v) {
 			bool no_out_edge = true;
-			for(int i = 0; (i < no_of_vertex); i++) {
-				if(graph[v, i] != 0) {
+			foreach(string i in graph.Keys) {
+				if(isAdjacent(v, i)) {
 					no_out_edge = false;
 					break;
 				}
@@ -106,10 +112,10 @@ namespace CoursePlanning
 			return no_out_edge;
 		}
 
-		private bool noInEdge(int v) {
+		private bool noInEdge(string v) {
 			bool no_in_edge = true;
-			for(int i = 0; (i < no_of_vertex); i++) {
-				if(graph[i, v] != 0) {
+			foreach(string i in graph.Keys) {
+				if(isAdjacent(i, v)) {
 					no_in_edge = false;
 					break;
 				}
@@ -117,14 +123,14 @@ namespace CoursePlanning
 			return no_in_edge;
 		}
 
-		private void DFS(int vertex, ref List<Tuple<int, int> > list, ref int timestamp)
+		private void DFS(string vertex, ref List<Tuple<int, string> > list, ref int timestamp)
 		{
 			visited[vertex] = true;
 			// Start timestamp
 			list.Add(Tuple.Create(timestamp, vertex));
 			timestamp++;
-			for(int i = 0; i < no_of_vertex; i++) {
-				if(graph[vertex, i] == 1 && !visited[i]) {
+			foreach(string i in graph.Keys) {
+				if(isAdjacent(vertex, i) && !visited[i]) {
 					DFS(i, ref list, ref timestamp);
 				}
 			}
@@ -133,17 +139,17 @@ namespace CoursePlanning
 			timestamp++;
 		}
 
-		private void BFS(int vertex, ref List<int> list)
+		private void BFS(string vertex, ref List<string> list)
 		{
-			Queue<int> q = new Queue<int>();
+			Queue<string> q = new Queue<string>();
 			q.Enqueue(vertex);
 			while((q.Count != 0) && !visitedAllVertex()) {
-				int v = q.Dequeue();
+				string v = q.Dequeue();
 				if(noInEdge(v) && !visited[v]) {
 					visited[v] = true;
-					for(int i = 0; i < no_of_vertex; i++) {
-						if(graph[v, i] == 1 && !visited[i]) {
-							graph[v, i] = 0;
+					foreach(string i in graph.Keys) {
+						if(isAdjacent(v, i) && !visited[i]) {
+							deleteEdge(v, i);
 							q.Enqueue(i);
 						}
 					}
@@ -155,41 +161,42 @@ namespace CoursePlanning
 		public void topologicalSort() 
 		{
 			Console.WriteLine("Graph : ");
-			for(int i = 0; i < no_of_vertex; i++) {
-				for(int j = 0; j < no_of_vertex; j++) {
-					Console.Write("{0} ", graph[i, j]);
+			foreach(KeyValuePair<string, HashSet<string>> kvp in graph) {
+				Console.Write("{0} ", kvp.Key);
+				foreach(string j in kvp.Value) {
+					Console.Write("{0} ", j);
 				}
 				Console.Write("\n");
 			}
 			Console.WriteLine();
 
 			// Tuple of timestamp and vertex
-			List<Tuple<int, int> > listDFS = new List<Tuple<int, int> >();
-			visited = new bool[no_of_vertex];
+			List<Tuple<int, string> > listDFS = new List<Tuple<int, string> >();
+			initializeVisited();
 			int timestamp = 1;
 			DFS(vertexNoIn(), ref listDFS, ref timestamp);
 			listDFS.Sort(compareTuple);
 
 			// Print all ordered
 			Console.Write("DFS: ");
-			bool[] printed = new bool[no_of_vertex];
+			HashSet<string> printed = new HashSet<string>();
 			for(int i = 0; i < listDFS.Count; i++) {
-				if(!printed[listDFS[i].Item2]) {
-					Console.Write("{0} ", dictItoS[listDFS[i].Item2]);
-					printed[listDFS[i].Item2] = true;
+				if(!printed.Contains(listDFS[i].Item2)) {
+					Console.Write("{0} ", listDFS[i].Item2);
+					printed.Add(listDFS[i].Item2);
 				}
 			}
 			Console.WriteLine();
 			Console.WriteLine();
 
-			List<int> listBFS = new List<int>();
-			visited = new bool[no_of_vertex];
+			List<string> listBFS = new List<string>();
+			initializeVisited();
 			BFS(vertexNoIn(), ref listBFS);
 
 			// Print all Ordered
 			Console.Write("BFS: ");
 			for(int i = 0; i < listBFS.Count; i++) {
-				Console.Write("{0} ", dictItoS[listBFS[i]]);
+				Console.Write("{0} ", listBFS[i]);
 			}
 			Console.WriteLine();
 			Console.WriteLine();
