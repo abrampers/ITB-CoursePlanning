@@ -1,4 +1,11 @@
-﻿using System;
+﻿/*
+	TUGAS BESAR STRATEGI ALGORITMA
+	Abram Perdanaputra 		/ 13516083
+	Faza Fahleraz			/ 13516095
+	Nicholas Rianto Putra 	/ 13516020
+*/
+
+using System;
 using System.Collections.Generic;
 
 namespace CoursePlanning
@@ -7,7 +14,7 @@ namespace CoursePlanning
     {
 		static void Main()
 		{
-			Graph g = new Graph("input.txt");
+			Graph g = new Graph("./input/input.txt");
 
 			g.topologicalSort();
 		}
@@ -18,8 +25,6 @@ namespace CoursePlanning
 		private Dictionary<string, HashSet<string>> graph;
     	private Dictionary<string, bool> visited = new Dictionary<string, bool>();
     	private int no_of_vertex;
-    	// private SortedDictionary<string, int> dictStoI;
-    	// private SortedDictionary<int, string> dictItoS;
 
     	public Graph(string file) 
     	{
@@ -29,39 +34,37 @@ namespace CoursePlanning
 			List<string>[] matrix = new List<string>[lines.Length];
 
 			// Initialize all the list in matrix
-			for(int i = 0; i < lines.Length; i++) {
+			for(int i = 0; i < lines.Length; i++) 
+			{
 				matrix[i] = new List<string>();
 			}
 
 			// Add each element to list
-			for(int i = 0; i < lines.Length; i++) {
+			for(int i = 0; i < lines.Length; i++) 
+			{
 				string[] temp = lines[i].Remove(lines[i].Length - 1).Split(',');
-				foreach(string s in temp) {
+				foreach(string s in temp) 
+				{
 					matrix[i].Add(s);
 				}
 			}
 
 			no_of_vertex = matrix.Length;
 
-			// dictStoI = new SortedDictionary<string, int>();
-			// dictItoS = new SortedDictionary<int, string>();
-
-			// for(int i = 0; i < no_of_vertex; i++) {
-			// 	dictStoI[matrix[i][0]] = i;
-			// 	dictItoS[i] = matrix[i][0];
-			// }
-
 			graph = new Dictionary<string, HashSet<string>>(); // Initialize matrix to zeros
 			for(int i = 0; i < no_of_vertex; i++) {
 				graph[matrix[i][0]] = new HashSet<string>();
-				for(int j = 1; j < matrix[i].Count; j++) {
+				for(int j = 1; j < matrix[i].Count; j++) 
+				{
 					graph[matrix[i][0]].Add(matrix[i][j]);
 				}
 			}
     	}
 
-    	private void initializeVisited() {
-    		foreach(string s in graph.Keys) {
+    	private void initializeVisited() 
+    	{
+    		foreach(string s in graph.Keys) 
+    		{
     			visited[s] = false;
     		}
     	}
@@ -71,14 +74,18 @@ namespace CoursePlanning
     		return graph[dest].Contains(src);
     	}
 
-    	private void deleteEdge(string src, string dest) {
+    	private void deleteEdge(string src, string dest) 
+    	{
     		graph[dest].Remove(src);
     	}
 
-    	private bool visitedAllVertex() {
+    	private bool visitedAllVertex() 
+    	{
     		bool visited_all = true;
-    		foreach(string i in graph.Keys) {
-    			if(!visited[i]) {
+    		foreach(string i in graph.Keys) 
+    		{
+    			if(!visited[i]) 
+    			{
     				visited_all = false;
     				break;
     			}
@@ -86,14 +93,18 @@ namespace CoursePlanning
     		return visited_all;
     	}
 
-		private int compareTuple(Tuple<int, string> x, Tuple<int, string> y) {
+		private int compareTuple(Tuple<int, string> x, Tuple<int, string> y) 
+		{
 		    return x.Item1 > y.Item1 ? -1 : 1;
 		}
 
-		private string vertexNoIn() {
+		private string vertexNoIn() 
+		{
 			string res = "\0";
-			foreach(KeyValuePair<string, HashSet<string>> kvp in graph) {
-				if(kvp.Value.Count == 0) {
+			foreach(KeyValuePair<string, HashSet<string>> kvp in graph) 
+			{
+				if(kvp.Value.Count == 0) 
+				{
 					res = kvp.Key;
 					break;
 				}
@@ -101,10 +112,13 @@ namespace CoursePlanning
 			return res;
 		}
 
-		private bool noOutEdge(string v) {
+		private bool noOutEdge(string v) 
+		{
 			bool no_out_edge = true;
-			foreach(string i in graph.Keys) {
-				if(isAdjacent(v, i)) {
+			foreach(string i in graph.Keys) 
+			{
+				if(isAdjacent(v, i)) 
+				{
 					no_out_edge = false;
 					break;
 				}
@@ -112,10 +126,13 @@ namespace CoursePlanning
 			return no_out_edge;
 		}
 
-		private bool noInEdge(string v) {
+		private bool noInEdge(string v) 
+		{
 			bool no_in_edge = true;
-			foreach(string i in graph.Keys) {
-				if(isAdjacent(i, v)) {
+			foreach(string i in graph.Keys) 
+			{
+				if(isAdjacent(i, v)) 
+				{
 					no_in_edge = false;
 					break;
 				}
@@ -130,7 +147,8 @@ namespace CoursePlanning
 			list.Add(Tuple.Create(timestamp, vertex));
 			timestamp++;
 			foreach(string i in graph.Keys) {
-				if(isAdjacent(vertex, i) && !visited[i]) {
+				if(isAdjacent(vertex, i) && !visited[i]) 
+				{
 					DFS(i, ref list, ref timestamp);
 				}
 			}
@@ -145,10 +163,13 @@ namespace CoursePlanning
 			q.Enqueue(vertex);
 			while((q.Count != 0) && !visitedAllVertex()) {
 				string v = q.Dequeue();
-				if(noInEdge(v) && !visited[v]) {
+				if(noInEdge(v) && !visited[v]) 
+				{
 					visited[v] = true;
-					foreach(string i in graph.Keys) {
-						if(isAdjacent(v, i) && !visited[i]) {
+					foreach(string i in graph.Keys) 
+					{
+						if(isAdjacent(v, i) && !visited[i]) 
+						{
 							deleteEdge(v, i);
 							q.Enqueue(i);
 						}
@@ -161,9 +182,11 @@ namespace CoursePlanning
 		public void topologicalSort() 
 		{
 			Console.WriteLine("Graph : ");
-			foreach(KeyValuePair<string, HashSet<string>> kvp in graph) {
+			foreach(KeyValuePair<string, HashSet<string>> kvp in graph) 
+			{
 				Console.Write("{0} ", kvp.Key);
-				foreach(string j in kvp.Value) {
+				foreach(string j in kvp.Value) 
+				{
 					Console.Write("{0} ", j);
 				}
 				Console.Write("\n");
@@ -180,8 +203,10 @@ namespace CoursePlanning
 			// Print all ordered
 			Console.Write("DFS: ");
 			HashSet<string> printed = new HashSet<string>();
-			for(int i = 0; i < listDFS.Count; i++) {
-				if(!printed.Contains(listDFS[i].Item2)) {
+			for(int i = 0; i < listDFS.Count; i++) 
+			{
+				if(!printed.Contains(listDFS[i].Item2)) 
+				{
 					Console.Write("{0} ", listDFS[i].Item2);
 					printed.Add(listDFS[i].Item2);
 				}
@@ -195,7 +220,8 @@ namespace CoursePlanning
 
 			// Print all Ordered
 			Console.Write("BFS: ");
-			for(int i = 0; i < listBFS.Count; i++) {
+			for(int i = 0; i < listBFS.Count; i++) 
+			{
 				Console.Write("{0} ", listBFS[i]);
 			}
 			Console.WriteLine();
