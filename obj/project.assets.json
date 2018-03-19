@@ -670,11 +670,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/CoursePlanning.csproj",
+      "projectUniqueName": "/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning1/CoursePlanning.csproj",
       "projectName": "CoursePlanning",
-      "projectPath": "/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/CoursePlanning.csproj",
+      "projectPath": "/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning1/CoursePlanning.csproj",
       "packagesPath": "/Users/abrampers/.nuget/packages/",
-      "outputPath": "/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning/obj/",
+      "outputPath": "/Users/abrampers/Documents/Academics/4th Semester/Strategi Algoritma/CoursePlanning1/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
